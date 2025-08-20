@@ -1,0 +1,19 @@
+steps:
+# Install dependencies
+- name: 'gcr.io/cloud-builders/npm'
+  args: ['install']
+
+# Run tests (optional but recommended)
+- name: 'gcr.io/cloud-builders/npm'
+  args: ['test']
+
+# Build the application
+- name: 'gcr.io/cloud-builders/npm'
+  args: ['run', 'build']
+
+# Build the Docker image
+- name: 'gcr.io/cloud-builders/docker'
+  args: ['build', '-t', 'gcr.io/$PROJECT_ID/tunes-to-tabs', '.']
+
+# Push the Docker image to Artifact Registry
+  images: ['gcr.io/$PROJECT_ID/tunes-to-tabs']
