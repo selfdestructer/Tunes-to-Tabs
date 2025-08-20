@@ -1,52 +1,76 @@
-# AI Agent Instructions for Music Tab Generation Project
+### **Project Goal**
 
-This document provides instructions for AI agents working on this repository. The goal is to build a Node.js application that can both generate guitar tabs from uploaded music files and generate music from uploaded guitar tabs.
+To build a Node.js application that can generate 2000s-style ASCII guitar tabs from uploaded music files and, as an experimental feature, generate music from uploaded guitar tabs.
 
-## Core Technologies
+### **Core Technologies**
 
-*   **Backend:** Node.js, Express, TypeScript
-*   **Frontend:** React
-*   **Cloud Provider:** Google Cloud Platform (GCP)
-*   **Core AI Model:**
-    *   **Google Gemini 2.5 Pro:** For all AI-driven tasks, including audio analysis, tab generation, and music generation.
+* **Backend:** Node.js, Express, TypeScript
+* **Frontend:** React
+* **Cloud Provider:** Google Cloud Platform (GCP)
+* **Core AI Model:** Google Gemini 2.5 Pro
 
-## Agent Workflow & Prompting Strategy
+---
+### **Agent Persona & Primary Task**
 
-Your primary role is to implement the features for this application. Follow these workflows and prompting strategies.
+You are an expert AI software developer and music transcriber. Your primary role is to implement the features for this application, which involves two main workflows. Your secondary role is to act as the core transcription engine, following the precise formatting rules outlined below.
 
-### 1. Music-to-Tabs Conversion
+---
+### **Workflow 1: Music-to-Tabs Conversion**
+
+This is the primary feature of the application.
 
 1.  **User Upload:** The user uploads an audio file (e.g., .mp3, .wav) through the React frontend.
-2.  **Tab Generation (Gemini):**
-    *   The backend receives the audio file. Your task is to implement a pipeline that sends this audio directly to the Gemini 2.5 Pro model.
-    *   The model will be responsible for analyzing the audio and generating the guitar tab in one step.
-    *   **Prompt Example Idea:** "Analyze the provided audio file which contains a guitar performance. Transcribe the guitar part and generate a standard ASCII guitar tab for a 6-string guitar in standard tuning. Group the notes into measures based on a 4/4 time signature."
-3.  **Display:** The generated tab is sent to the frontend to be displayed in an interactive viewer.
+2.  **AI Transcription (Your Core Task):** The backend receives the audio file and sends it to the Gemini 2.5 Pro model with the following instructions:
 
-### 2. Tabs-to-Music Conversion (Reverse Operation)
+    > **Prompt for Gemini:**
+    >
+    > You are an expert music transcriber specializing in 2000s-era rock and metal guitar. Your task is to listen to the provided audio file, which contains a single, isolated guitar track, and generate a complete, accurate, and properly formatted plain text ASCII tablature.
+    >
+    > **Output Formatting Rules:**
+    >
+    > * **Header:** Start with a two-line header for `Tempo` and `Tuning`. Default to Standard Tuning if uncertain.
+    > * **Layout:** Use a fixed-width layout with six lines for the strings (low E on bottom) and `|` for measure breaks.
+    > * **Chords:** Place chord names (`Am`, `G`, etc.) above the staff.
+    > * **Technique Symbols:** You **must** use the following symbols:
+    >     * `h` - Hammer-on
+    >     * `p` - Pull-off
+    >     * `^` - Bend
+    >     * `r` - Release Bend
+    >     * `/` - Slide up
+    >     * `\` - Slide down
+    >     * `~` - Vibrato
+    >     * `x` - Muted Note
+    >     * `P.H.` - Pinch Harmonic (above the note)
+    >
+    > **Golden Example:**
+    > ```
+    > Tempo: 140bpm
+    > Tuning: Drop D (D A D G B e)
+    >
+    >    Am                   G
+    > e|--------------------|----------------------------|
+    > B|--------------------|----------------------------|
+    > G|--------------------|------------------P.H.------|
+    > D|----7--5h7p5---5----|----5--5/7--5~------5-------|
+    > A|-0-----------7------|----------------7^9---------|
+    > D|--------------------|-5--------------------------|
+    > ```
 
-This is a secondary, experimental feature.
+3.  **Display:** The generated tab is sent to the frontend to be displayed in an interactive, retro-styled viewer.
 
-1.  **User Upload:** The user uploads a guitar tab, either as plain text or in a structured format.
-2.  **Tab Parsing (Gemini):**
-    *   If the tab is unstructured text, use Gemini 2.5 Pro to parse it and convert it into a structured format (e.g., JSON).
-    *   **Prompt Example Idea:** "Parse the following ASCII guitar tab. Convert it into a JSON object where each note has a 'string', 'fret', 'duration', and 'timing' attribute. Assume a 4/4 time signature and 120 bpm if not specified."
-3.  **Music Generation (Gemini):**
-    *   This is the experimental part. You will need to investigate the capabilities of Gemini 2.5 Pro for generating audio from a structured text or JSON representation.
-    *   **Prompting Strategy:** The prompt to Gemini should include the structured note data and request the generation of an audio file.
-    *   **Prompt Example Idea:** "Generate a realistic acoustic guitar audio performance from the following JSON data representing musical notes. Use a tempo of 120 bpm. Output the result as an MP3 file."
-4.  **Playback:** The generated audio file is made available for the user to play back in the frontend.
+---
+### **Workflow 2: Tabs-to-Music Conversion (Experimental)**
 
-## Frontend Development Guidelines
+1.  **User Upload:** The user uploads a guitar tab as plain text.
+2.  **AI Tab Parsing:** Use Gemini 2.5 Pro to parse the unstructured ASCII tab into a structured JSON format.
+    * **Prompt Idea:** "Parse the following ASCII guitar tab. Convert it into a JSON object where each note has a 'string', 'fret', 'duration', and 'timing' attribute. Assume a 4/4 time signature and 120 bpm if not specified."
+3.  **AI Music Generation:** Use Gemini 2.5 Pro to generate an audio file from the structured JSON data.
+    * **Prompt Idea:** "Generate a realistic acoustic guitar audio performance from the following JSON data. Use a tempo of 120 bpm. Output the result as an MP3 file."
+4.  **Playback:** The generated audio is made available for playback on the frontend.
 
-*   The initial focus is on building a landing page with specific, retro-themed UI elements as per the user's request.
-*   **Landing Page:** Must have a parallax effect for the main taglines.
-*   **File Upload:** Must be styled to look like an "old school" file uploader.
-*   **Loading Animation:** Must mimic a classic Windows file transfer dialog.
+---
+### **Frontend Development Guidelines**
 
-## General Development Guidelines
-
-*   Follow the phased development approach mentioned in `scout-prompt.md`.
-*   Infrastructure configurations for GCP should be kept in a separate `/infrastructure` directory.
-*   Prioritize creating a robust API between the frontend and backend.
-*   Write unit and integration tests for all major functionality.
+* **Landing Page:** Must have a parallax effect for the main taglines.
+* **File Upload:** Must be styled to look like an "old school" file uploader.
+* **Loading Animation:** Must mimic a classic Windows file transfer dialog.
