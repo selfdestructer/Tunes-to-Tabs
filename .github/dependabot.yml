@@ -1,0 +1,60 @@
+version: 2
+updates:
+  # GitHub Actions workflow dependencies
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - github-actions
+
+  # Docker base image updates (expects a Dockerfile in the root)
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - docker
+
+  # Root Node.js backend (adjust if backend code is elsewhere)
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - npm
+    # Possible strategies: "auto" (default), "increase", "lockfile-only"
+    # versioning-strategy: auto
+
+  # Frontend React app (uncomment or edit if your frontend lives in a different folder)
+  - package-ecosystem: "npm"
+    directory: "/frontend"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 10
+    labels:
+      - dependencies
+      - npm
+    # If you don’t have a /frontend folder, delete this block.
+
+  # Example: shared UI package (delete if unused)
+  # - package-ecosystem: "npm"
+  #   directory: "/packages/ui"
+  #   schedule:
+  #     interval: "weekly"
+
+  # Optional: enable more frequent security-only scans (commented by default)
+  # - package-ecosystem: "npm"
+  #   directory: "/"
+  #   schedule:
+  #     interval: "daily"
+  #   allow:
+  #     - dependency-type: "direct"
+  #   labels:
+  #     - security
